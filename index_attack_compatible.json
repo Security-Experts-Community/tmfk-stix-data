@@ -1,0 +1,22 @@
+{
+    "id": "85bbbbe7-e757-41f5-9074-d64d9569e520",
+    "name": "Threat Matrix for Kubernetes",
+    "description": "Microsoft Defender for Cloud threat matrix for Kubernetes (TMFK) contains attack tactics, techniques and mitigations relevant for Kubernetes environment.",
+    "created": "2024-03-01T14:00:00.188Z",
+    "modified": "2024-03-01T14:00:00.188Z",
+    "collections": [
+        {
+            "id": "x-mitre-collection--704a5def-03fc-45c2-8513-e863d808c363",
+            "created": "2024-03-05T14:00:00.188Z",
+            "versions": [
+                {
+                    "version": "0.1",
+                    "url": "https://raw.githubusercontent.com/Security-Experts-Community/tmfk-stix-data/main/build/tmfk_attack_compatible_b885d18.json",
+                    "modified": "2024-03-05T14:00:00.188Z"
+                }
+            ],
+            "name": "ATT&CK compatible TMFK",
+            "description": "MITRE ATT&CK compatible STIX 2.1 Threat Matrix for Kubernetes collection bundle"
+        }
+    ]
+}

@@ -6,6 +6,7 @@ from constants import (
     ATTACK_SPEC_VERSION,
     CREATOR_IDENTITY,
     DEFAULT_CREATOR_JSON,
+    GET_COLLECTION_ID,
     GET_TMFK_DOMAIN,
     GET_TMFK_SOURCE,
     MITIGATIONS_PATH,
@@ -117,6 +118,7 @@ def parse_tmfk(mode: Mode):
     objects.append(identity)
 
     collection = Collection(
+        id=GET_COLLECTION_ID(mode=mode),
         spec_version="2.1",
         name="Threat Matrix for Kubernetes",
         description="The purpose of the threat matrix for Kubernetes is to conceptualize the known tactics, techniques, and procedures (TTP) that adversaries may use against Kubernetes environments. Inspired from MITRE ATT&CK, the threat matrix for Kubernetes is designed to give quick insight into a potential TTP that an adversary may be using in their attack campaign. The threat matrix for Kubernetes contains also mitigations specific to Kubernetes environments and attack techniques.",

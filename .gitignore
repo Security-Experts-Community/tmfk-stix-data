@@ -1,5 +1,5 @@
 *.lock
-ms-matrix
+ms-matrix/Threat-Matrix-for-Kubernetes
 .vscode
 
 # Byte-compiled / optimized / DLL files

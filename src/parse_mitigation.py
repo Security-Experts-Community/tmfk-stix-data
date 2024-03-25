@@ -59,7 +59,7 @@ def parse_mitigation(file_path: str):
             ],
             name=mitigation_name,
             description="\n\n".join(
-                [handle_description_markup(d) for d in json_content["p"][2:]]
+                [handle_description_markup(d) for d in json_content["p"][2:] if "_value" in d and '!!!' not in d["_value"]]
             ),
             x_mitre_ids=mitre_attack_mitigations,
             x_mitre_parent_mitigation=parent_mitigation

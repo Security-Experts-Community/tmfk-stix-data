@@ -45,7 +45,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
             for t in list(filter(lambda x: not x.startswith("T"), t))
         ]
 
-        page_name = technique_name.lower().replace(" ", "%20")
+        page_name = technique_name.replace(" ", "%20")
         external_references = [
             {
                 "source_name": GET_TMFK_SOURCE(mode=mode),

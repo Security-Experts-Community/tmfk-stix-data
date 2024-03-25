@@ -45,11 +45,12 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
             for t in list(filter(lambda x: not x.startswith("T"), t))
         ]
 
+        page_name = technique_name.lower().replace(" ", "%20")
         external_references = [
             {
                 "source_name": GET_TMFK_SOURCE(mode=mode),
                 "external_id": tmfk_id,
-                "url": f"https://microsoft.github.io/Azure-Threat-Research-Matrix/techniques/{technique_name}",
+                "url": f"https://microsoft.github.io/Threat-Matrix-for-Kubernetes/techniques/{page_name}",
             },
         ]
 

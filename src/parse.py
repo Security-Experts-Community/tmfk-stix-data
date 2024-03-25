@@ -100,7 +100,7 @@ def parse_tmfk(mode: Mode):
             {
                 "external_id": "tmfk",
                 "source_name": GET_TMFK_SOURCE(mode=mode),
-                "url": "https://microsoft.github.io/Azure-Threat-Research-Matrix",
+                "url": "https://microsoft.github.io/Threat-Matrix-for-Kubernetes",
             }
         ],
         name="Threat Matrix for Kubernetes",

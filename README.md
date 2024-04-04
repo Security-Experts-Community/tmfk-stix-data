@@ -1,4 +1,5 @@
 # Threat Matrix for Kubernetes STIX Data
+[![Telegram chat](https://img.shields.io/static/v1?label=chat&message=Telegram&color=blue&logo=telegram)](https://t.me/s3curity_experts_community/3744)
 
 Microsoft Defender for Cloud [threat matrix for Kubernetes (TMFK)](https://github.com/microsoft/Threat-Matrix-for-Kubernetes) contains attack tactics, techniques and mitigations relevant for Kubernetes environment.
 

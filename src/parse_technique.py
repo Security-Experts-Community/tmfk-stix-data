@@ -10,6 +10,7 @@ from constants import (
 from custom_tmfk_objects import Technique
 from git_tools import get_file_creation_date, get_file_modification_date
 from marko.ext.gfm import gfm
+from utils import create_uuid_from_string
 
 
 def handle_description_markup(description_row: dict) -> str:
@@ -54,7 +55,11 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
             },
         ]
 
+        mitre_technique_id = "attack-pattern--" + str(
+            create_uuid_from_string(val=f"microsoft.tmkf.technique.{tmfk_id}")
+        )
         technique = Technique(
+            id=mitre_technique_id,
             x_mitre_platforms=[TMFK_PLATFORM],
             x_mitre_domains=[GET_TMFK_DOMAIN(mode=mode)],
             created=creation_datetime,

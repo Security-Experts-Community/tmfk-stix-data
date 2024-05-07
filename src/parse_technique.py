@@ -1,11 +1,11 @@
 import html_to_json
 from constants import (
     CREATOR_IDENTITY,
-    get_tmfk_domain,
-    get_tmfk_source,
     TMFK_PATH,
     TMFK_PLATFORM,
     Mode,
+    get_tmfk_domain,
+    get_tmfk_source,
 )
 from custom_tmfk_objects import Technique
 from git_tools import get_file_creation_date, get_file_modification_date
@@ -14,6 +14,7 @@ from marko.ext.gfm import gfm
 
 def handle_description_markup(description_row: dict) -> str:
     mdescription = ""
+
     if "code" in description_row:
         codes = [c["_value"] for c in description_row["code"]]
         mdescription = description_row["_values"][0]
@@ -21,6 +22,7 @@ def handle_description_markup(description_row: dict) -> str:
             mdescription += " " + code + description_row["_values"][i + 1]
     else:
         mdescription = description_row["_value"]
+
     return mdescription
 
 
@@ -29,11 +31,14 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
         content = f.read()
         html_content = gfm(content)
         json_content = html_to_json.convert(html_content)
+
         modified_datetime = get_file_modification_date(
-            repo_path=TMFK_PATH, file_path=file_path
+            repo_path=TMFK_PATH,
+            file_path=file_path,
         )
         creation_datetime = get_file_creation_date(
-            repo_path=TMFK_PATH, file_path=file_path
+            repo_path=TMFK_PATH,
+            file_path=file_path,
         )
 
         technique_name = json_content["h1"][0]["_value"]

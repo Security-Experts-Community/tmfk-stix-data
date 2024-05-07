@@ -2,7 +2,7 @@ import os
 
 import html_to_json
 from constants import (
-    GET_TMFK_SOURCE,
+    get_tmfk_source,
     MITIGATIONS_PATH,
 )
 from marko.ext.gfm import gfm
@@ -52,7 +52,7 @@ def parse_mitigation(file_path: str):
             allow_custom=True,
             external_references=[
                 {
-                    "source_name": f"{GET_TMFK_SOURCE()}",
+                    "source_name": f"{get_tmfk_source()}",
                     "url": craft_mitigation_url(tmfk_id=tmfk_id, mitigation_name=mitigation_name, parent_mitigations=parent_mitigations),
                     "external_id": tmfk_id,
                 }

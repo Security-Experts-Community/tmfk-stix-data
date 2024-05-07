@@ -1,5 +1,8 @@
-from pathlib import Path
 from enum import Enum
+from pathlib import Path
+from typing import Literal
+
+CREATOR_IDENTITY = "identity--5dcf0a7a-875b-470b-8a01-7c6a84c5e68e"
 
 TMFK_PATH = Path(__file__).parent.parent / "ms-matrix" / "Threat-Matrix-for-Kubernetes"
 TACTICS_PATH = TMFK_PATH / "docs" / "tactics"
@@ -25,55 +28,59 @@ TMFK_PLATFORM = "Kubernetes"
 
 
 class Mode(Enum):
-    strict = 1
-    attack_compatible = 2
+    STRICT: int = 1
+    ATTACK_COMPATIBLE: int = 2
 
 
-# DEFAULT_MODE = Mode.strict
-DEFAULT_MODE = Mode.attack_compatible
+ModeEnumAttribute = Literal[Mode.STRICT, Mode.ATTACK_COMPATIBLE]
+
+# DEFAULT_MODE = Mode.STRICT
+DEFAULT_MODE = Mode.ATTACK_COMPATIBLE
 
 
-def GET_COLLECTION_ID(mode=DEFAULT_MODE):
+class UnexpectedMode(Exception): ...
+
+
+def get_collection_id(mode: ModeEnumAttribute = DEFAULT_MODE) -> str:
     match mode:
-        case Mode.strict:
+        case Mode.STRICT:
             return "x-mitre-collection--8702c9a3-cf7b-4e79-99e2-191d79c6042b"
-        case Mode.attack_compatible:
+        case Mode.ATTACK_COMPATIBLE:
             return "x-mitre-collection--704a5def-03fc-45c2-8513-e863d808c363"
         case _:
-            raise Exception("Unexpected mode")
+            raise UnexpectedMode("Unexpected mode")
 
 
-def GET_TMFK_DOMAIN(mode=DEFAULT_MODE):
+def get_tmfk_domain(mode: ModeEnumAttribute = DEFAULT_MODE) -> str:
     match mode:
-        case Mode.strict:
+        case Mode.STRICT:
             return "tmfk"
-        case Mode.attack_compatible:
+        case Mode.ATTACK_COMPATIBLE:
             return "enterprise-attack"
         case _:
-            raise Exception("Unexpected mode")
+            raise UnexpectedMode("Unexpected mode")
 
 
-def GET_TMFK_SOURCE(mode=DEFAULT_MODE):
+def get_tmfk_source(mode: ModeEnumAttribute = DEFAULT_MODE) -> str:
     match mode:
-        case Mode.strict:
+        case Mode.STRICT:
             return "tmfk"
-        case Mode.attack_compatible:
+        case Mode.ATTACK_COMPATIBLE:
             return "mitre-attack"
         case _:
-            raise Exception("Unexpected mode")
+            raise UnexpectedMode("Unexpected mode")
 
 
-def GET_KILL_CHAIN_NAME(mode=DEFAULT_MODE):
+def get_kill_chain_name(mode: ModeEnumAttribute = DEFAULT_MODE) -> str:
     match mode:
-        case Mode.strict:
+        case Mode.STRICT:
             return "tmfk"
-        case Mode.attack_compatible:
+        case Mode.ATTACK_COMPATIBLE:
             return "mitre-attack"
         case _:
-            raise Exception("Unexpected mode")
+            raise UnexpectedMode("Unexpected mode")
 
 
-CREATOR_IDENTITY = "identity--5dcf0a7a-875b-470b-8a01-7c6a84c5e68e"
 DEFAULT_CREATOR_JSON = f"""
 {{
     "id": "{CREATOR_IDENTITY}",
@@ -85,7 +92,7 @@ DEFAULT_CREATOR_JSON = f"""
     "spec_version": "2.1",
     "x_mitre_attack_spec_version": "2.1.0",
     "x_mitre_domains": [
-        "{GET_TMFK_DOMAIN()}"
+        "{get_tmfk_domain()}"
     ],
     "x_mitre_version": "{TMFK_VERSION}"
 }}

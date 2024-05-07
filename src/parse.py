@@ -6,9 +6,9 @@ from constants import (
     ATTACK_SPEC_VERSION,
     CREATOR_IDENTITY,
     DEFAULT_CREATOR_JSON,
-    GET_COLLECTION_ID,
-    GET_TMFK_DOMAIN,
-    GET_TMFK_SOURCE,
+    get_collection_id,
+    get_tmfk_domain,
+    get_tmfk_source,
     MITIGATIONS_PATH,
     TACTICS_PATH,
     TECHNIQUES_PATH,
@@ -66,7 +66,7 @@ def parse_tmfk(mode: Mode):
                     x_mitre_version=TMFK_VERSION,
                     x_mitre_modified_by_ref=CREATOR_IDENTITY,
                     x_mitre_attack_spec_version="2.1.0",
-                    x_mitre_domains=[GET_TMFK_DOMAIN(mode=mode)],
+                    x_mitre_domains=[get_tmfk_domain(mode=mode)],
                 )
             )
     
@@ -87,7 +87,7 @@ def parse_tmfk(mode: Mode):
                         x_mitre_version=TMFK_VERSION,
                         x_mitre_modified_by_ref=CREATOR_IDENTITY,
                         x_mitre_attack_spec_version="2.1.0",
-                        x_mitre_domains=[GET_TMFK_DOMAIN(mode=mode)],
+                        x_mitre_domains=[get_tmfk_domain(mode=mode)],
                     )
                 )
 
@@ -99,7 +99,7 @@ def parse_tmfk(mode: Mode):
         external_references=[
             {
                 "external_id": "tmfk",
-                "source_name": GET_TMFK_SOURCE(mode=mode),
+                "source_name": get_tmfk_source(mode=mode),
                 "url": "https://microsoft.github.io/Threat-Matrix-for-Kubernetes",
             }
         ],
@@ -109,7 +109,7 @@ def parse_tmfk(mode: Mode):
         x_mitre_attack_spec_version=ATTACK_SPEC_VERSION,
         x_mitre_modified_by_ref=CREATOR_IDENTITY,
         spec_version="2.1",
-        x_mitre_domains=[GET_TMFK_DOMAIN(mode=mode)],
+        x_mitre_domains=[get_tmfk_domain(mode=mode)],
         allow_custom=True,
     )
     objects.append(matrix)
@@ -118,7 +118,7 @@ def parse_tmfk(mode: Mode):
     objects.append(identity)
 
     collection = Collection(
-        id=GET_COLLECTION_ID(mode=mode),
+        id=get_collection_id(mode=mode),
         spec_version="2.1",
         name="Threat Matrix for Kubernetes",
         description="The purpose of the threat matrix for Kubernetes is to conceptualize the known tactics, techniques, and procedures (TTP) that adversaries may use against Kubernetes environments. Inspired from MITRE ATT&CK, the threat matrix for Kubernetes is designed to give quick insight into a potential TTP that an adversary may be using in their attack campaign. The threat matrix for Kubernetes contains also mitigations specific to Kubernetes environments and attack techniques.",
@@ -133,11 +133,11 @@ def parse_tmfk(mode: Mode):
 
     bundle = Bundle(collection, objects, allow_custom=True)
     commit_hash = get_last_commit_hash(TMFK_PATH)
-    output_file_last = Path(__file__).parent.parent / "build" / f"tmfk_{mode.name}.json"
+    output_file_last = Path(__file__).parent.parent / "build" / f"tmfk_{mode.name.lower()}.json"
     with open(output_file_last, "w", encoding="utf-8") as f:
         f.write(bundle.serialize(pretty=True))
         
-    output_file_versioned = Path(__file__).parent.parent / "build" / f"tmfk_{mode.name}_{commit_hash}.json"    
+    output_file_versioned = Path(__file__).parent.parent / "build" / f"tmfk_{mode.name.lower()}_{commit_hash}.json"    
     with open(output_file_versioned, "w", encoding="utf-8") as f:
         f.write(bundle.serialize(pretty=True))
 

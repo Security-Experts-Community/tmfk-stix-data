@@ -1,8 +1,8 @@
 import html_to_json
 from constants import (
     CREATOR_IDENTITY,
-    GET_TMFK_DOMAIN,
-    GET_TMFK_SOURCE,
+    get_tmfk_domain,
+    get_tmfk_source,
     TMFK_PATH,
     TMFK_PLATFORM,
     Mode,
@@ -48,7 +48,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
         page_name = technique_name.replace(" ", "%20")
         external_references = [
             {
-                "source_name": GET_TMFK_SOURCE(mode=mode),
+                "source_name": get_tmfk_source(mode=mode),
                 "external_id": tmfk_id,
                 "url": f"https://microsoft.github.io/Threat-Matrix-for-Kubernetes/techniques/{page_name}",
             },
@@ -56,7 +56,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
 
         technique = Technique(
             x_mitre_platforms=[TMFK_PLATFORM],
-            x_mitre_domains=[GET_TMFK_DOMAIN(mode=mode)],
+            x_mitre_domains=[get_tmfk_domain(mode=mode)],
             created=creation_datetime,
             modified=modified_datetime,
             created_by_ref=CREATOR_IDENTITY,
@@ -67,7 +67,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
             ),
             kill_chain_phases=[
                 {
-                    "kill_chain_name": GET_TMFK_SOURCE(mode=mode),
+                    "kill_chain_name": get_tmfk_source(mode=mode),
                     "phase_name": t,
                 }
                 for t in tmfk_tactics

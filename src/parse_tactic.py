@@ -4,8 +4,8 @@ import html_to_json
 from constants import (
     ATTACK_SPEC_VERSION,
     CREATOR_IDENTITY,
-    GET_TMFK_DOMAIN,
-    GET_TMFK_SOURCE,
+    get_tmfk_domain,
+    get_tmfk_source,
     TMFK_PATH,
     TMFK_TACTICS_MAP,
     TMFK_VERSION,
@@ -34,7 +34,7 @@ def parse_tactic(file_path: str, tactic_name: str, mode: Mode) -> Tactic:
             repo_path=TMFK_PATH, file_path=file_path
         )
         return Tactic(
-            x_mitre_domains=[GET_TMFK_DOMAIN(mode=mode)],
+            x_mitre_domains=[get_tmfk_domain(mode=mode)],
             created=creation_datetime,
             modified=modified_datetime,
             created_by_ref=CREATOR_IDENTITY,
@@ -42,7 +42,7 @@ def parse_tactic(file_path: str, tactic_name: str, mode: Mode) -> Tactic:
                 {
                     "external_id": tactic_id,
                     "url": tactic_link,
-                    "source_name": GET_TMFK_SOURCE(mode=mode),
+                    "source_name": get_tmfk_source(mode=mode),
                 },
             ],
             name=tactic_display_name,

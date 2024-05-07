@@ -1,7 +1,8 @@
 """The classes found here are how ATRM objects can be represented as custom STIX objects instead of python dictionaries."""
+
 from collections import OrderedDict
 
-from constants import get_tmfk_source, Mode
+from constants import Mode, get_tmfk_source
 from stix2 import CustomObject, KillChainPhase
 from stix2.properties import (
     BooleanProperty,
@@ -15,8 +16,10 @@ from stix2.properties import (
 from stix2.v21.base import _STIXBase21
 
 
-class CustomStixObject(object):
+class CustomStixObject:
     """Custom STIX object used for ATRM objects."""
+
+    x_mitre_version: str
 
     def get_version(self) -> str:
         """Get the version of the object.
@@ -51,15 +54,14 @@ class CustomStixObject(object):
         ("x_mitre_ids", ListProperty(StringProperty())),
     ],
 )
-class Technique(CustomStixObject, object):
+class Technique(CustomStixObject):
     def get_id(self, mode: Mode):
         external_references = self.get("external_references")
         if external_references:
             for reference in external_references:
-                if (
-                    reference.get("external_id")
-                    and reference.get("source_name") == get_tmfk_source(mode=mode)
-                ):
+                if reference.get("external_id") and reference.get(
+                    "source_name"
+                ) == get_tmfk_source(mode=mode):
                     return reference["external_id"]
         return None
 
@@ -73,7 +75,7 @@ class Technique(CustomStixObject, object):
             "x_mitre_modified_by_ref",
             ReferenceProperty(valid_types="identity", spec_version="2.1"),
         ),
-        ('description', StringProperty()),
+        ("description", StringProperty()),
         ("x_mitre_version", StringProperty()),
         ("x_mitre_domains", ListProperty(StringProperty())),
         ("x_mitre_attack_spec_version", StringProperty()),
@@ -108,7 +110,7 @@ class Technique(CustomStixObject, object):
         ),
     ],
 )
-class Relationship(CustomStixObject, object):
+class Relationship(CustomStixObject):
     pass
 
 
@@ -136,5 +138,5 @@ class ObjectRef(_STIXBase21):
         ("x_mitre_contents", ListProperty(ObjectRef)),
     ],
 )
-class Collection(CustomStixObject, object):
+class Collection(CustomStixObject):
     pass

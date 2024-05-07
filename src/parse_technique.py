@@ -56,7 +56,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
         ]
 
         mitre_technique_id = "attack-pattern--" + str(
-            create_uuid_from_string(val=f"microsoft.tmkf.technique.{tmfk_id}")
+            create_uuid_from_string(val=f"microsoft.tmfk.technique.{tmfk_id}")
         )
         technique = Technique(
             id=mitre_technique_id,

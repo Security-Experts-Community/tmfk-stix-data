@@ -6,9 +6,6 @@ from constants import (
     ATTACK_SPEC_VERSION,
     CREATOR_IDENTITY,
     DEFAULT_CREATOR_JSON,
-    get_collection_id,
-    get_tmfk_domain,
-    get_tmfk_source,
     MITIGATIONS_PATH,
     TACTICS_PATH,
     TECHNIQUES_PATH,
@@ -16,6 +13,10 @@ from constants import (
     TMFK_TACTICS_MAP,
     TMFK_VERSION,
     Mode,
+    ModeEnumAttribute,
+    get_collection_id,
+    get_tmfk_domain,
+    get_tmfk_source,
 )
 from custom_tmfk_objects import Collection, ObjectRef, Relationship
 from git_tools import get_last_commit_hash
@@ -26,10 +27,11 @@ from parse_technique import parse_technique
 from stix2 import Bundle, parse
 
 
-def parse_tmfk(mode: Mode):
+def parse_tmfk(mode: ModeEnumAttribute) -> None:
     tactics = {}
     objects = []
     techniques = {}
+
     for tactic_name in TMFK_TACTICS_MAP:
         tactic_file = TACTICS_PATH / tactic_name / "index.md"
         tactic = parse_tactic(tactic_file, tactic_name, mode)
@@ -42,10 +44,11 @@ def parse_tmfk(mode: Mode):
         technique = parse_technique(file_path=file_path, mode=mode)
         techniques[technique.get_id(mode)] = technique
         objects.append(technique)
-        
+
     mitigations_listing = list(
         filter(
-            lambda x: x.endswith(".md") and x != "index.md", os.listdir(MITIGATIONS_PATH)
+            lambda x: x.endswith(".md") and x != "index.md",
+            os.listdir(MITIGATIONS_PATH),
         )
     )
 
@@ -54,7 +57,7 @@ def parse_tmfk(mode: Mode):
         file_path = os.path.join(MITIGATIONS_PATH, file_name)
         mitigation, ids = parse_mitigation(file_path=file_path)
         objects.append(mitigation)
-        
+
         for idx in ids:
             objects.append(
                 Relationship(
@@ -69,12 +72,12 @@ def parse_tmfk(mode: Mode):
                     x_mitre_domains=[get_tmfk_domain(mode=mode)],
                 )
             )
-    
+
     for folder in folders:
         mitigations, ids = handle_folder(folder=folder)
         for key in mitigations:
             objects.append(mitigations[key])
-            
+
         for idx in ids:
             for t in ids[idx]:
                 objects.append(
@@ -126,20 +129,27 @@ def parse_tmfk(mode: Mode):
         x_mitre_version=TMFK_VERSION,
         created_by_ref=CREATOR_IDENTITY,
         x_mitre_contents=[
-            ObjectRef(object_ref=obj.id, object_modified=obj.modified) for obj in objects
+            ObjectRef(object_ref=obj.id, object_modified=obj.modified)
+            for obj in objects
         ],
     )
 
-
     bundle = Bundle(collection, objects, allow_custom=True)
     commit_hash = get_last_commit_hash(TMFK_PATH)
-    output_file_last = Path(__file__).parent.parent / "build" / f"tmfk_{mode.name.lower()}.json"
+    output_file_last = (
+        Path(__file__).parent.parent / "build" / f"tmfk_{mode.name.lower()}.json"
+    )
     with open(output_file_last, "w", encoding="utf-8") as f:
         f.write(bundle.serialize(pretty=True))
-        
-    output_file_versioned = Path(__file__).parent.parent / "build" / f"tmfk_{mode.name.lower()}_{commit_hash}.json"    
+
+    output_file_versioned = (
+        Path(__file__).parent.parent
+        / "build"
+        / f"tmfk_{mode.name.lower()}_{commit_hash}.json"
+    )
     with open(output_file_versioned, "w", encoding="utf-8") as f:
         f.write(bundle.serialize(pretty=True))
+
 
 if __name__ == "__main__":
     for mode in Mode:

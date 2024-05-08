@@ -92,8 +92,6 @@ def parse_mitigation(file_path: str) -> tuple[CourseOfAction, list]:
         for row in json_content["table"][0]["tbody"][0]["tr"]:
             tids.append(row["td"][0]["a"][0]["_value"])
 
-        print(type(mitigation), type(tids))
-
         return mitigation, tids
 
 

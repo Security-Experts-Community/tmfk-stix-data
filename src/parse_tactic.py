@@ -4,12 +4,12 @@ import html_to_json
 from constants import (
     ATTACK_SPEC_VERSION,
     CREATOR_IDENTITY,
-    GET_TMFK_DOMAIN,
-    GET_TMFK_SOURCE,
     TMFK_PATH,
     TMFK_TACTICS_MAP,
     TMFK_VERSION,
     Mode,
+    get_tmfk_domain,
+    get_tmfk_source,
 )
 from git_tools import get_file_creation_date, get_file_modification_date
 from marko.ext.gfm import gfm
@@ -26,13 +26,17 @@ def parse_tactic(file_path: str, tactic_name: str, mode: Mode) -> Tactic:
         tactic_id = TMFK_TACTICS_MAP[tactic_name]
         tactic_description = json_content["p"][1]["_value"]
         tactic_link = f"https://microsoft.github.io/Threat-Matrix-for-Kubernetes/tactics/{tactic_name}"
-        splitted = re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', tactic_name)).split()
+        splitted = re.sub(
+            "([A-Z][a-z]+)", r" \1", re.sub("([A-Z]+)", r" \1", tactic_name)
+        ).split()
         tactic_display_name = " ".join(splitted)
         modified_datetime = get_file_modification_date(
-            repo_path=TMFK_PATH, file_path=file_path
+            repo_path=TMFK_PATH,
+            file_path=file_path,
         )
         creation_datetime = get_file_creation_date(
-            repo_path=TMFK_PATH, file_path=file_path
+            repo_path=TMFK_PATH,
+            file_path=file_path,
         )
 
         mitre_tactic_id = "x-mitre-tactic--" + str(
@@ -48,7 +52,7 @@ def parse_tactic(file_path: str, tactic_name: str, mode: Mode) -> Tactic:
                 {
                     "external_id": tactic_id,
                     "url": tactic_link,
-                    "source_name": GET_TMFK_SOURCE(mode=mode),
+                    "source_name": get_tmfk_source(mode=mode),
                 },
             ],
             name=tactic_display_name,

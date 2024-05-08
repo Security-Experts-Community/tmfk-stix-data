@@ -1,11 +1,11 @@
 import html_to_json
 from constants import (
     CREATOR_IDENTITY,
-    GET_TMFK_DOMAIN,
-    GET_TMFK_SOURCE,
     TMFK_PATH,
     TMFK_PLATFORM,
     Mode,
+    get_tmfk_domain,
+    get_tmfk_source,
 )
 from custom_tmfk_objects import Technique
 from git_tools import get_file_creation_date, get_file_modification_date
@@ -15,6 +15,7 @@ from utils import create_uuid_from_string
 
 def handle_description_markup(description_row: dict) -> str:
     mdescription = ""
+
     if "code" in description_row:
         codes = [c["_value"] for c in description_row["code"]]
         mdescription = description_row["_values"][0]
@@ -22,6 +23,7 @@ def handle_description_markup(description_row: dict) -> str:
             mdescription += " " + code + description_row["_values"][i + 1]
     else:
         mdescription = description_row["_value"]
+
     return mdescription
 
 
@@ -30,11 +32,14 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
         content = f.read()
         html_content = gfm(content)
         json_content = html_to_json.convert(html_content)
+
         modified_datetime = get_file_modification_date(
-            repo_path=TMFK_PATH, file_path=file_path
+            repo_path=TMFK_PATH,
+            file_path=file_path,
         )
         creation_datetime = get_file_creation_date(
-            repo_path=TMFK_PATH, file_path=file_path
+            repo_path=TMFK_PATH,
+            file_path=file_path,
         )
 
         technique_name = json_content["h1"][0]["_value"]
@@ -49,7 +54,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
         page_name = technique_name.replace(" ", "%20")
         external_references = [
             {
-                "source_name": GET_TMFK_SOURCE(mode=mode),
+                "source_name": get_tmfk_source(mode=mode),
                 "external_id": tmfk_id,
                 "url": f"https://microsoft.github.io/Threat-Matrix-for-Kubernetes/techniques/{page_name}",
             },
@@ -61,7 +66,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
         technique = Technique(
             id=mitre_technique_id,
             x_mitre_platforms=[TMFK_PLATFORM],
-            x_mitre_domains=[GET_TMFK_DOMAIN(mode=mode)],
+            x_mitre_domains=[get_tmfk_domain(mode=mode)],
             created=creation_datetime,
             modified=modified_datetime,
             created_by_ref=CREATOR_IDENTITY,
@@ -72,7 +77,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
             ),
             kill_chain_phases=[
                 {
-                    "kill_chain_name": GET_TMFK_SOURCE(mode=mode),
+                    "kill_chain_name": get_tmfk_source(mode=mode),
                     "phase_name": t,
                 }
                 for t in tmfk_tactics

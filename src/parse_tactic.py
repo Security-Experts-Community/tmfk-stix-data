@@ -44,7 +44,7 @@ def parse_tactic(file_path: str, tactic_name: str, mode: Mode) -> Tactic:
         )
         return Tactic(
             id=mitre_tactic_id,
-            x_mitre_domains=[GET_TMFK_DOMAIN(mode=mode)],
+            x_mitre_domains=[get_tmfk_domain(mode=mode)],
             created=creation_datetime,
             modified=modified_datetime,
             created_by_ref=CREATOR_IDENTITY,

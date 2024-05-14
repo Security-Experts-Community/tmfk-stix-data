@@ -1,10 +1,15 @@
 import os
+import re
+from datetime import datetime
+from typing import Literal
 
 import html_to_json
 from constants import (
     MITIGATIONS_PATH,
     get_tmfk_source,
 )
+from custom_tmfk_objects import Technique
+from git_tools import iter_file_commits, open_file_at_commit
 from marko.ext.gfm import gfm
 from stix2 import CourseOfAction
 
@@ -109,3 +114,33 @@ def handle_folder(folder: str) -> tuple[dict, dict]:
         mitigations[mitigation.id] = mitigation
 
     return mitigations, mapping
+
+
+def parse_relationship_created_modified_fields(
+    repo_path: str,
+    file_path: str,
+    technique: Technique,
+) -> dict[Literal["created", "modified"], datetime]:
+    relationship_dt = {"created": None, "modified": None}
+
+    for commit in iter_file_commits(repo_path, file_path):
+        repo_file_path = file_path.replace(str(repo_path), "")
+        if repo_file_path[:1] in ("/", "\\"):
+            repo_file_path = repo_file_path[1:]
+
+        with open_file_at_commit(commit, repo_file_path) as f:
+            mitigation_data = f.read().decode("utf-8")
+
+        if technique.external_references:
+            technique_param = technique.external_references[0].external_id
+        else:
+            technique_param = technique.name
+
+        has_relation = bool(re.search(technique_param.lower(), mitigation_data.lower()))
+        if has_relation:
+            relationship_dt["created"] = commit.committed_datetime
+            relationship_dt["modified"] = (
+                relationship_dt["modified"] or relationship_dt["created"]
+            )
+
+    return relationship_dt

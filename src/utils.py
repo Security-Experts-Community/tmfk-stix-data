@@ -1,5 +1,5 @@
-import uuid
 import hashlib
+import uuid
 
 
 def create_uuid_from_string(val: str) -> uuid.UUID:

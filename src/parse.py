@@ -19,7 +19,7 @@ from constants import (
     get_tmfk_source,
 )
 from custom_tmfk_objects import Collection, ObjectRef, Relationship
-from git_tools import get_last_commit_hash
+from git_tools import get_last_commit_hash, get_first_commit_date
 from mitreattack.stix20.custom_attack_objects import Matrix
 from parse_mitigation import handle_folder, parse_mitigation
 from parse_tactic import parse_tactic
@@ -96,7 +96,7 @@ def parse_tmfk(mode: ModeEnumAttribute) -> None:
 
     matrix = Matrix(
         tactic_refs=[tactics[t].id for t in tactics],
-        created=datetime.now(),
+        created=get_first_commit_date(repo_path=TMFK_PATH),
         modified=datetime.now(),
         created_by_ref=CREATOR_IDENTITY,
         external_references=[
@@ -125,6 +125,8 @@ def parse_tmfk(mode: ModeEnumAttribute) -> None:
         spec_version="2.1",
         name="Threat Matrix for Kubernetes",
         description="The purpose of the threat matrix for Kubernetes is to conceptualize the known tactics, techniques, and procedures (TTP) that adversaries may use against Kubernetes environments. Inspired from MITRE ATT&CK, the threat matrix for Kubernetes is designed to give quick insight into a potential TTP that an adversary may be using in their attack campaign. The threat matrix for Kubernetes contains also mitigations specific to Kubernetes environments and attack techniques.",
+        created=get_first_commit_date(repo_path=TMFK_PATH),
+        modified=datetime.now(),
         x_mitre_attack_spec_version=ATTACK_SPEC_VERSION,
         x_mitre_version=TMFK_VERSION,
         created_by_ref=CREATOR_IDENTITY,

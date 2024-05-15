@@ -21,7 +21,11 @@ from constants import (
 from custom_tmfk_objects import Collection, ObjectRef, Relationship
 from git_tools import get_last_commit_hash, get_first_commit_date
 from mitreattack.stix20.custom_attack_objects import Matrix
-from parse_mitigation import handle_folder, parse_mitigation
+from parse_mitigation import (
+    handle_folder,
+    parse_mitigation,
+    parse_relationship_created_modified_fields,
+)
 from parse_tactic import parse_tactic
 from parse_technique import parse_technique
 from stix2 import Bundle, parse
@@ -59,17 +63,28 @@ def parse_tmfk(mode: ModeEnumAttribute) -> None:
         objects.append(mitigation)
 
         for idx in ids:
+            technique = techniques[idx]
+
+            relationship_dt = parse_relationship_created_modified_fields(
+                repo_path=TMFK_PATH,
+                file_path=file_path,
+                technique=technique,
+            )
+            created, modified = relationship_dt["created"], relationship_dt["modified"]
+
             objects.append(
                 Relationship(
                     source_ref=mitigation.id,
                     description=mitigation.description.split(".")[0],
                     relationship_type="mitigates",
-                    target_ref=techniques[idx].id,
+                    target_ref=technique.id,
                     created_by_ref=CREATOR_IDENTITY,
                     x_mitre_version=TMFK_VERSION,
                     x_mitre_modified_by_ref=CREATOR_IDENTITY,
                     x_mitre_attack_spec_version="2.1.0",
                     x_mitre_domains=[get_tmfk_domain(mode=mode)],
+                    created=created,
+                    modified=modified,
                 )
             )
 
@@ -80,17 +95,31 @@ def parse_tmfk(mode: ModeEnumAttribute) -> None:
 
         for idx in ids:
             for t in ids[idx]:
+                technique = techniques[t]
+
+                relationship_dt = parse_relationship_created_modified_fields(
+                    repo_path=TMFK_PATH,
+                    file_path=file_path,
+                    technique=technique,
+                )
+                created, modified = (
+                    relationship_dt["created"],
+                    relationship_dt["modified"],
+                )
+
                 objects.append(
                     Relationship(
                         source_ref=idx,
                         description=mitigations[idx].description.split(".")[0],
                         relationship_type="mitigates",
-                        target_ref=techniques[t].id,
+                        target_ref=technique,
                         created_by_ref=CREATOR_IDENTITY,
                         x_mitre_version=TMFK_VERSION,
                         x_mitre_modified_by_ref=CREATOR_IDENTITY,
                         x_mitre_attack_spec_version="2.1.0",
                         x_mitre_domains=[get_tmfk_domain(mode=mode)],
+                        created=created,
+                        modified=modified,
                     )
                 )
 

@@ -2,8 +2,8 @@
 
 from collections import OrderedDict
 from datetime import datetime
+from typing import ClassVar
 
-from constants import Mode, get_tmfk_source
 from stix2 import CustomObject, KillChainPhase
 from stix2.properties import (
     BooleanProperty,
@@ -15,6 +15,8 @@ from stix2.properties import (
     TypeProperty,
 )
 from stix2.v21.base import _STIXBase21
+
+from constants import Mode, get_tmfk_source
 
 
 class CustomStixObject:
@@ -61,7 +63,7 @@ class Technique(CustomStixObject):
         if external_references:
             for reference in external_references:
                 if reference.get("external_id") and reference.get(
-                    "source_name"
+                    "source_name",
                 ) == get_tmfk_source(mode=mode):
                     return reference["external_id"]
         return None
@@ -132,16 +134,18 @@ class Relationship(CustomStixObject):
 
 
 class ObjectRef(_STIXBase21):
-    _properties = OrderedDict(
+    _properties: ClassVar[OrderedDict] = OrderedDict(
         [
             ("object_ref", StringProperty(required=True)),
             (
                 "object_modified",
                 TimestampProperty(
-                    precision="millisecond", precision_constraint="min", required=True
+                    precision="millisecond",
+                    precision_constraint="min",
+                    required=True,
                 ),
             ),
-        ]
+        ],
     )
 
 

@@ -1,4 +1,6 @@
 import html_to_json
+from marko.ext.gfm import gfm
+
 from constants import (
     CREATOR_IDENTITY,
     TMFK_PATH,
@@ -9,7 +11,6 @@ from constants import (
 )
 from custom_tmfk_objects import Technique
 from git_tools import get_file_creation_date, get_file_modification_date
-from marko.ext.gfm import gfm
 from utils import create_uuid_from_string
 
 
@@ -28,7 +29,7 @@ def handle_description_markup(description_row: dict) -> str:
 
 
 def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(file_path, encoding="utf-8") as f:
         content = f.read()
         html_content = gfm(content)
         json_content = html_to_json.convert(html_content)
@@ -47,8 +48,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
         t = [a["_value"] for a in json_content["p"][1]["a"]]
         mitre_attack_techniques = list(filter(lambda x: x.startswith("T"), t))
         tmfk_tactics = [
-            t.replace(" ", "-").lower()
-            for t in list(filter(lambda x: not x.startswith("T"), t))
+            t.replace(" ", "-").lower() for t in list(filter(lambda x: not x.startswith("T"), t))
         ]
 
         page_name = technique_name.replace(" ", "%20")
@@ -61,9 +61,10 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
         ]
 
         mitre_technique_id = "attack-pattern--" + str(
-            create_uuid_from_string(val=f"microsoft.tmfk.technique.{tmfk_id}")
+            create_uuid_from_string(val=f"microsoft.tmfk.technique.{tmfk_id}"),
         )
-        technique = Technique(
+
+        return Technique(
             id=mitre_technique_id,
             x_mitre_platforms=[TMFK_PLATFORM],
             x_mitre_domains=[get_tmfk_domain(mode=mode)],
@@ -73,7 +74,7 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
             external_references=external_references,
             name=technique_name,
             description="\n\n".join(
-                [handle_description_markup(d) for d in json_content["p"][2:]]
+                [handle_description_markup(d) for d in json_content["p"][2:]],
             ),
             kill_chain_phases=[
                 {
@@ -88,4 +89,3 @@ def parse_technique(file_path: str, mode: Mode) -> tuple[Technique, dict]:
             x_mitre_attack_spec_version="2.1.0",
             x_mitre_ids=mitre_attack_techniques,
         )
-        return technique

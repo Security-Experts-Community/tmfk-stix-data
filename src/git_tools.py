@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Iterator, Generator
 from io import BytesIO
+from typing import Generator, Iterator
 
 import git
 

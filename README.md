@@ -3,13 +3,13 @@
 
 Microsoft Defender for Cloud [threat matrix for Kubernetes (TMFK)](https://github.com/microsoft/Threat-Matrix-for-Kubernetes) contains attack tactics, techniques and mitigations relevant for Kubernetes environment.
 
-This repository contains the TMFK dataset represented in STIX 2.1 JSON collections. 
+This repository contains the TMFK dataset represented in STIX 2.1 JSON collections.
 
 ## Repository Structure
 
 ```
 .
-├─ build ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ Collection folder 
+├─ build ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ Collection folder
 │   ├─ tmfk_strict.json ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ Most recent strict TMFK release
 │   ├─ tmfk_attack_compatible.json ∙∙∙∙∙∙∙∙∙∙∙∙∙∙ Most recent ATT&CK compatible TMFK release
 │   ├─ tmfk_strict_b885d18.json ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ TMFK strict collection for commit hash b885d18 of site repo
